@@ -7,9 +7,20 @@ const tours = JSON.parse(
 */
 exports.getAllTours = async (req, res) => {
   try{
-    const tours = await Tour.find()
+        //BUILD QUERY
+        const queryObj = {...req.query};
+        const excludedFields = ['page','sort', 'limit','fields'];
 
-    res.status(200).json({
+        excludedFields.forEach(el => delete queryObj[el])    
+        const query = await Tour.find(queryObj)
+
+
+       console.log(req.query, queryObj)
+       // EXECUTE THE QUERY     
+       const tours = await query
+   
+   
+        res.status(200).json({
       status: 'success',
       results: tours.length,
       data: {
@@ -62,7 +73,7 @@ exports.createTour = async (req, res) => {
     {
         res.status(400).json({
             status: 'fail',
-            message: 'invalid data sent'
+            message: err
         })
     }
    
